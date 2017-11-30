@@ -35,7 +35,6 @@ import com.qualcomm.hardware.lynx.LynxI2cColorRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -54,7 +53,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @Autonomous
-public class BasicOpMode extends LinearOpMode {
+public class redLeft extends LinearOpMode {
 
     private DcMotor motor0;
     private DcMotor motor1;
@@ -78,6 +77,8 @@ public class BasicOpMode extends LinearOpMode {
         // Motors initialization
         motor0 = hardwareMap.get(DcMotor.class, "motor0");
         motor1 = hardwareMap.get(DcMotor.class, "motor1");
+        motor0.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         spoolMotor = hardwareMap.get(DcMotor.class, "spoolMotor");
         // Servos initialization
         servo0 = hardwareMap.get(Servo.class, "servo0");
@@ -135,7 +136,7 @@ public class BasicOpMode extends LinearOpMode {
     /*
      * Move the robot forward
      */
-    private void move(double inches) {
+    private void moveDistance(double inches) {
         motor0.setDirection(DcMotor.Direction.FORWARD);
         motor1.setDirection(DcMotor.Direction.FORWARD);
         motor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -195,24 +196,24 @@ public class BasicOpMode extends LinearOpMode {
                 && getHue(currentColor) > 190 && getHue(currentColor) < 250) {
             //Pick up servo a bit and then move backwards to knock of jewel
             servo5.setPosition(0.085);
-            move(-2);
+            moveDistance(-1.8);
         } else {
             servo5.setPosition(0.085);
-            move(2);
+            moveDistance(2);
             servo5.setPosition(1);
-            move(-2.35);
+            moveDistance(-2.15);
         }
         //completely pick up servo
         servo5.setPosition(1);
         sleep(2000);
         // deposit glyph in safe zone
-        move(-32.3);
+        moveDistance(-32.3);
         sleep(200);
         turn(-90);
         sleep(200);
         lift(0.1);
         sleep(200);
-        move(8);
+        moveDistance(8);
         clamp(false);
     }
 }
