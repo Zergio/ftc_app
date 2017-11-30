@@ -147,7 +147,7 @@ public class BasicOpMode extends LinearOpMode {
         //     AndyMark NeveRest 40: 1120
         //     REV Hex Motor: 2240
         motor0.setTargetPosition((int) (inches * -57.75));
-        motor1.setTargetPosition((int) (inches * -57.75));
+        motor1.setTargetPosition((int) (inches * 57.75));
         waitForStart(); // really ???
         // the maximum speed of the motors.
         motor0.setPower(0.1);
