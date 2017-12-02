@@ -136,7 +136,7 @@ public class redLeft extends LinearOpMode {
     /*
      * Move the robot forward
      */
-    private void moveDistance(double inches) {
+    private void moveInch(double inches) {
         motor0.setDirection(DcMotor.Direction.FORWARD);
         motor1.setDirection(DcMotor.Direction.FORWARD);
         motor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -196,24 +196,24 @@ public class redLeft extends LinearOpMode {
                 && getHue(currentColor) > 190 && getHue(currentColor) < 250) {
             //Pick up servo a bit and then move backwards to knock of jewel
             servo5.setPosition(0.085);
-            moveDistance(-1.8);
+            moveInch(-1.8);
         } else {
             servo5.setPosition(0.085);
-            moveDistance(2);
+            moveInch(2);
             servo5.setPosition(1);
-            moveDistance(-2.15);
+            moveInch(-2.15);
         }
         //completely pick up servo
         servo5.setPosition(1);
         sleep(2000);
         // deposit glyph in safe zone
-        moveDistance(-32.3);
+        moveInch(-32.3);
         sleep(200);
         turn(-90);
         sleep(200);
         lift(0.1);
         sleep(200);
-        moveDistance(8);
+        moveInch(8);
         clamp(false);
     }
 }

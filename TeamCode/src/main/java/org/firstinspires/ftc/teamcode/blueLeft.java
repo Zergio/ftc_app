@@ -53,7 +53,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 @Autonomous
-public class redRight extends LinearOpMode {
+public class blueLeft extends LinearOpMode {
 
     private DcMotor motor0;
     private DcMotor motor1;
@@ -209,11 +209,11 @@ public class redRight extends LinearOpMode {
         // deposit glyph in safe zone
         moveInch(-21);
         sleep(200);
-        turn(90);
+        turn(-90);
         sleep(200);
         moveInch(11);
         sleep(200);
-        turn(90);
+        turn(-90);
         sleep(200);
         lift(0);
         sleep(200);
