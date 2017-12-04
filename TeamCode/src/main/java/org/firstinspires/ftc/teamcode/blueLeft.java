@@ -99,7 +99,7 @@ public class blueLeft extends LinearOpMode {
      */
     private void lift(double height) {
         // variable height is the position of the slide from 0
-        double targetHeight = -1394f * height;
+        double targetHeight = -600f * height;
         spoolMotor.setTargetPosition((int)targetHeight);
         spoolMotor.setPower(1);
         while (spoolMotor.isBusy());
