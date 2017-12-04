@@ -211,7 +211,7 @@ public class redLeft extends LinearOpMode {
         sleep(200);
         turn(-90);
         sleep(200);
-        lift(0.1);
+        lift(0);
         sleep(200);
         moveInch(8);
         clamp(false);

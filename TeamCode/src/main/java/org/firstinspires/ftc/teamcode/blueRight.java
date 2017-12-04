@@ -196,22 +196,23 @@ public class blueRight extends LinearOpMode {
                 && getHue(currentColor) > 190 && getHue(currentColor) < 250) {
             //Pick up servo a bit and then move backwards to knock of jewel
             servo5.setPosition(0.085);
-            moveInch(-1.8);
-        } else {
-            servo5.setPosition(0.085);
             moveInch(2);
             servo5.setPosition(1);
-            moveInch(-2.15);
+            moveInch(-2);
+        } else {
+            servo5.setPosition(0.085);
+            moveInch(-1.8);
+            moveInch(1.8);
         }
         //completely pick up servo
         servo5.setPosition(1);
         sleep(2000);
         // deposit glyph in safe zone
-        moveInch(-32.3);
+        moveInch(36.5);
         sleep(200);
-        turn(90);
+        turn(-90);
         sleep(200);
-        lift(0.1);
+        lift(0);
         sleep(200);
         clamp(false);
         sleep(200);
