@@ -99,7 +99,7 @@ public class redLeft extends LinearOpMode {
      */
     private void lift(double height) {
         // variable height is the position of the slide from 0
-        double targetHeight = -1394f * height;
+        double targetHeight = -600f * height;
         spoolMotor.setTargetPosition((int)targetHeight);
         spoolMotor.setPower(1);
         while (spoolMotor.isBusy());
@@ -211,9 +211,10 @@ public class redLeft extends LinearOpMode {
         sleep(200);
         turn(-90);
         sleep(200);
-        lift(0.1);
+        lift(0);
+        sleep(100);
+        clamp(false);
         sleep(200);
         moveInch(8);
-        clamp(false);
     }
 }
