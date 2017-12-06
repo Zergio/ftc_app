@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Created by ethan on 12/3/17.
  */
 
-public class teleOP extends LinearOpMode {
+public class TeleOp extends LinearOpMode {
     int slow = 2;
 
     private DcMotor motor0;
