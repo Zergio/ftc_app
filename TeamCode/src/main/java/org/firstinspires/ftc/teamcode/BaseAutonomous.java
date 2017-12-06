@@ -1,17 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import android.graphics.Color;
 
 import com.qualcomm.hardware.lynx.LynxI2cColorRangeSensor;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
@@ -19,29 +16,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
 /**
  * Created by serge on 12/5/2017.
+ * Base class for all autonomous OpModes
  */
-
-public abstract class BaseAutonomous extends LinearOpMode {
+public abstract class BaseAutonomous extends BaseOpMode {
     protected final String vuforiaLicense = "AXOZJVv/////AAAAGb2y8LIaVE3fi65/6/TwcCMDDJlAw0RjWXtTZPLR" +
             "Q2o5U7/aeLkF3wRej13hegHVoLuP3QCE5STcnpT0ajAMqa4ObqC3n6R6hWGUCPl5ZjtGeNLghtVE5pswlpc8/8" +
             "Z4GwJEE65mmAwo6tfS54FIpfVq7qLKF3rByohYrwwKZ1mQM6STF1t8IsbeXrBEtfCQN5fSX2wLMPSJE34Iz0Ig" +
             "VlSAVbJfdxKkX8JONhqeAOWseLUkG+fI+Da71V4eMzfHarfuN7Nltbd+3zNE7DIwFQs5/PDIotbVVpYrpS4wiH" +
             "1lNPNxWLSyv/ArSyCyNi9Ygi5W/UqIlQ+7Mweg6f16d6nZpMN1Ejv1o0s7L4L0aXny";
-
-    // Motors
-    protected DcMotor motor0;
-    protected DcMotor motor1;
-    protected DcMotor spoolMotor;
-
-    // Servos
-    protected Servo servo0;
-    protected Servo servo1;
-    protected Servo servo2;
-    protected Servo servo3;
-    protected Servo servo5;
-
-    // Color sensor
-    LynxI2cColorRangeSensor color0;
 
     // Declare OpMode members.
     protected ElapsedTime runtime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
@@ -168,7 +150,7 @@ public abstract class BaseAutonomous extends LinearOpMode {
     }
 
     protected void turn(double degrees) {
-        motor0.setMode(D cMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motor0.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);

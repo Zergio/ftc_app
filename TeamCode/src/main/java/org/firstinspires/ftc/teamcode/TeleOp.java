@@ -8,20 +8,11 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Created by ethan on 12/3/17.
  */
 
-public class TeleOp extends LinearOpMode {
+public class TeleOp extends BaseOpMode {
     int slow = 2;
 
-    private DcMotor motor0;
-    private DcMotor motor1;
-    private DcMotor spoolMotor;
-
-    private Servo servo0;
-    private Servo servo1;
-    private Servo servo2;
-    private Servo servo3;
-    private Servo servo5;
-
     public void runOpMode() {
+        initOpMode();
         waitForStart();
 
         while (opModeIsActive()){
