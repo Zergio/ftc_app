@@ -1,21 +1,20 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 
 /**
  * Created by ethan on 12/3/17.
  */
-
-public class TeleOp extends BaseOpMode {
+@TeleOp
+public class MainTeleOp extends BaseOpMode {
     int slow = 2;
 
     public void runOpMode() {
         initOpMode();
         waitForStart();
 
-        while (opModeIsActive()){
+        while (opModeIsActive()) {
             servo5.setPosition(1);
             drive();
             runToggleClamp();
