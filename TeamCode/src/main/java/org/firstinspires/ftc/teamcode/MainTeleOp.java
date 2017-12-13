@@ -76,8 +76,8 @@ public class MainTeleOp extends LinearOpMode {
         motor1.setPower(-1 * gamepad1.left_stick_y / slow);
 
         if (gamepad1.right_stick_x != 0) {
-            motor0.setPower(gamepad1.right_stick_x / slow);
-            motor1.setPower(gamepad1.right_stick_x / slow);
+            motor0.setPower(gamepad1.right_stick_x / slow * 2);
+            motor1.setPower(gamepad1.right_stick_x / slow * 2);
         }
     }
 
