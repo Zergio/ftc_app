@@ -1,30 +1,61 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.lynx.LynxI2cColorRangeSensor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 /**
  * Created by ethan on 12/3/17.
  */
+@TeleOp
+public class MainTeleOp extends LinearOpMode {
+    // Motors
+    protected DcMotor motor0;
+    protected DcMotor motor1;
+    protected DcMotor spoolMotor;
 
-public class teleOP extends LinearOpMode {
+    // Servos
+    protected Servo servo0;
+    protected Servo servo1;
+    protected Servo servo2;
+    protected Servo servo3;
+    protected Servo servo5;
+
+    // Color sensor
+    protected LynxI2cColorRangeSensor color0;
+
+    /**
+     * Initialize the variables for the OpMode
+     */
+    protected void initOpMode() {
+        // Motors initialization
+        motor0 = hardwareMap.get(DcMotor.class, "motor0");
+        motor1 = hardwareMap.get(DcMotor.class, "motor1");
+        motor0.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        spoolMotor = hardwareMap.get(DcMotor.class, "spoolMotor");
+        // Servos initialization
+        servo0 = hardwareMap.get(Servo.class, "servo0");
+        servo1 = hardwareMap.get(Servo.class, "servo1");
+        servo2 = hardwareMap.get(Servo.class, "servo2");
+        servo3 = hardwareMap.get(Servo.class, "servo3");
+        servo5 = hardwareMap.get(Servo.class, "servo5");
+        // Sensors intialization
+        color0 = hardwareMap.get(LynxI2cColorRangeSensor.class, "color0");
+
+        // initialize the spool encoder
+        spoolMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
     int slow = 2;
 
-    private DcMotor motor0;
-    private DcMotor motor1;
-    private DcMotor spoolMotor;
-
-    private Servo servo0;
-    private Servo servo1;
-    private Servo servo2;
-    private Servo servo3;
-    private Servo servo5;
-
     public void runOpMode() {
+        initOpMode();
         waitForStart();
 
-        while (opModeIsActive()){
+        while (opModeIsActive()) {
             servo5.setPosition(1);
             drive();
             runToggleClamp();
@@ -45,8 +76,8 @@ public class teleOP extends LinearOpMode {
         motor1.setPower(-1 * gamepad1.left_stick_y / slow);
 
         if (gamepad1.right_stick_x != 0) {
-            motor0.setPower(gamepad1.right_stick_x / slow);
-            motor1.setPower(gamepad1.right_stick_x / slow);
+            motor0.setPower(gamepad1.right_stick_x / slow * 2);
+            motor1.setPower(gamepad1.right_stick_x / slow * 2);
         }
     }
 
