@@ -35,7 +35,7 @@ public class BlueLeft extends LinearOpMode {
         // set color servo down
         servo5.setPosition(0.5);
         servo5.setPosition(0.065);
-        sleep(2000); // ???
+        sleep(2000); // We sleep to make sure that the original command is executed.
         int currentColor = Color.rgb(color0.red(), color0.green(), color0.blue());
         // test for blue
         if (getSaturation(currentColor) >= 0.5
@@ -65,7 +65,8 @@ public class BlueLeft extends LinearOpMode {
         sleep(200);
         clamp(false);
         sleep(200);
-        moveInch(10);
+        moveInch(8);
+        moveInch(-3);
     }
 
 
