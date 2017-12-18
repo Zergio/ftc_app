@@ -28,6 +28,8 @@ public class RedLeft extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        int column = getColumn();
+
         clamp(true);
         sleep(500);
         // move a clamp up a little bit more than halfway
@@ -53,10 +55,8 @@ public class RedLeft extends LinearOpMode {
         servo5.setPosition(1);
         sleep(2000);
         // deposit glyph in safe zone
-        moveInch(-12);
-        int column = getColumn();
         sleep(200);
-        moveInch(-20.3 + column);
+        moveInch(-33.3 + column);
         sleep(200);
         turn(-90);
         sleep(200);
@@ -64,7 +64,7 @@ public class RedLeft extends LinearOpMode {
         sleep(100);
         clamp(false);
         sleep(200);
-        moveInch(6);
+        moveInch(8);
         moveInch(-3);
     }
 
@@ -119,9 +119,9 @@ public class RedLeft extends LinearOpMode {
         while (this.getRuntime() < 3.0 && opModeIsActive()) {
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark == RelicRecoveryVuMark.LEFT) {
-                outcome = 6;
-            } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
                 outcome = -6;
+            } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
+                outcome = 6;
             } else {
                 outcome = 0;
             };
