@@ -176,8 +176,8 @@ public class RedLeft extends LinearOpMode {
             servo0.setPosition(1);
             servo1.setPosition(-1.5);
         } else {
-            servo0.setPosition(0.25);
-            servo1.setPosition(0.5);
+            servo0.setPosition(0);
+            servo1.setPosition(0.8);
         }
     }
 
