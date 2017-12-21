@@ -83,19 +83,19 @@ public class MainTeleOp extends LinearOpMode {
 
     private void runToggleClamp() {
         if (gamepad2.left_bumper) {
-            servo0.setPosition(0.25);
-            servo1.setPosition(0.5);
+            servo0.setPosition(0);
+            servo1.setPosition(0.7);
         }
         if (gamepad2.right_bumper) {
             servo0.setPosition(1);
             servo1.setPosition(-1.5);
         }
         if (gamepad2.a) {
-            servo0.setPosition(0.5);
-            servo1.setPosition(0.25);
+            servo0.setPosition(0.37);
+            servo1.setPosition(0.3);
         }
     }
-
+;
     private void runSpool() {
         double spoolMotorPower = gamepad2.left_stick_y;
         spoolMotor.setPower(spoolMotorPower);

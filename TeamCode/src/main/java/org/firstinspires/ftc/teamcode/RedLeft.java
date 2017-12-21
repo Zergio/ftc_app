@@ -30,6 +30,10 @@ public class RedLeft extends LinearOpMode {
 
         int column = getColumn();
 
+        // move lift up a bit to disengage stopper, and then lower back down
+        lift(0.05);
+        lift(0);
+
         clamp(true);
         sleep(500);
         // move a clamp up a little bit more than halfway

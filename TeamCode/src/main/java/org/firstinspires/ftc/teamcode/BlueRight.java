@@ -28,6 +28,12 @@ public class BlueRight extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        int column = getColumn();
+
+        // move lift up a bit to disengage stopper, and then lower back down
+        lift(0.05);
+        lift(0);
+
         clamp(true);
         sleep(500);
         // move a clamp up a little bit more than halfway
@@ -54,7 +60,7 @@ public class BlueRight extends LinearOpMode {
         servo5.setPosition(1);
         sleep(2000);
         // deposit glyph in safe zone
-        moveInch(36.5);
+        moveInch(36.5 + column);
         sleep(200);
         turn(-90);
         sleep(200);
@@ -96,11 +102,13 @@ public class BlueRight extends LinearOpMode {
 
     private VuforiaLocalizer vuforia;
 
-    public RelicRecoveryVuMark getColumn() {
+    public int getColumn() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources()
                 .getIdentifier("cameraMonitorViewId",
                         "id",
                         hardwareMap.appContext.getPackageName());
+
+        int outcome = 0;
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
         parameters.vuforiaLicenseKey = vuforiaLicense;
@@ -116,15 +124,18 @@ public class BlueRight extends LinearOpMode {
 
         while (this.getRuntime() < 3.0 && opModeIsActive()) {
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-                return vuMark;
+            if (vuMark == RelicRecoveryVuMark.LEFT) {
+                outcome = -6;
+            } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
+                outcome = 6;
             } else {
-                telemetry.addData("VuMark", "not visible");
-            }
+                outcome = 0;
+            };
             telemetry.update();
         }
-        return RelicRecoveryVuMark.UNKNOWN;
-    }
+
+        return outcome;
+    };
 
     /*
      * Initialize the variables for the OpMode
