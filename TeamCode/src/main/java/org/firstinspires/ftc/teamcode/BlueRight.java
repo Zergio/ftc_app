@@ -80,6 +80,8 @@ public class BlueRight extends LinearOpMode {
     protected DcMotor motor0;
     protected DcMotor motor1;
     protected DcMotor spoolMotor;
+    protected DcMotor rightClamp;
+    protected DcMotor leftClamp;
 
     // Servos
     protected Servo servo0;
@@ -147,12 +149,15 @@ public class BlueRight extends LinearOpMode {
         motor0.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         spoolMotor = hardwareMap.get(DcMotor.class, "spoolMotor");
+        rightClamp = hardwareMap.get(DcMotor.class, "rightClamp");
+        leftClamp = hardwareMap.get(DcMotor.class, "leftClamp");
+
         // Servos initialization
         servo0 = hardwareMap.get(Servo.class, "servo0");
         servo1 = hardwareMap.get(Servo.class, "servo1");
         servo2 = hardwareMap.get(Servo.class, "servo2");
         servo3 = hardwareMap.get(Servo.class, "servo3");
-        servo5 = hardwareMap.get(Servo.class, "servo5");
+        servo5 = hardwareMap.get(Servo.class, "colorServo");
         // Sensors intialization
         color0 = hardwareMap.get(LynxI2cColorRangeSensor.class, "color0");
 

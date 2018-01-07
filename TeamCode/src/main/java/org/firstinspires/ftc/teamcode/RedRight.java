@@ -82,6 +82,8 @@ public class RedRight extends LinearOpMode {
     protected DcMotor motor0;
     protected DcMotor motor1;
     protected DcMotor spoolMotor;
+    protected DcMotor rightClamp;
+    protected DcMotor leftClamp;
 
     // Servos
     protected Servo servo0;
@@ -98,7 +100,7 @@ public class RedRight extends LinearOpMode {
             "Z4GwJEE65mmAwo6tfS54FIpfVq7qLKF3rByohYrwwKZ1mQM6STF1t8IsbeXrBEtfCQN5fSX2wLMPSJE34Iz0Ig" +
             "VlSAVbJfdxKkX8JONhqeAOWseLUkG+fI+Da71V4eMzfHarfuN7Nltbd+3zNE7DIwFQs5/PDIotbVVpYrpS4wiH" +
             "1lNPNxWLSyv/ArSyCyNi9Ygi5W/UqIlQ+7Mweg6f16d6nZpMN1Ejv1o0s7L4L0aXny";
-
+git
     // Declare OpMode members.
     protected ElapsedTime runtime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
 
@@ -151,12 +153,15 @@ public class RedRight extends LinearOpMode {
         motor0.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         spoolMotor = hardwareMap.get(DcMotor.class, "spoolMotor");
+        rightClamp = hardwareMap.get(DcMotor.class, "rightClamp");
+        leftClamp = hardwareMap.get(DcMotor.class, "leftClamp");
+
         // Servos initialization
         servo0 = hardwareMap.get(Servo.class, "servo0");
         servo1 = hardwareMap.get(Servo.class, "servo1");
         servo2 = hardwareMap.get(Servo.class, "servo2");
         servo3 = hardwareMap.get(Servo.class, "servo3");
-        servo5 = hardwareMap.get(Servo.class, "servo5");
+        servo5 = hardwareMap.get(Servo.class, "colorServo");
         // Sensors intialization
         color0 = hardwareMap.get(LynxI2cColorRangeSensor.class, "color0");
 

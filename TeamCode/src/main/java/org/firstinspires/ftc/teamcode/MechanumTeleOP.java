@@ -10,18 +10,20 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Created by ethan on 12/3/17.
  */
 @TeleOp
-public class MainTeleOp extends LinearOpMode {
+public class MechanumTeleOP extends LinearOpMode {
     // Motors
     protected DcMotor motor0;
     protected DcMotor motor1;
     protected DcMotor spoolMotor;
+    protected DcMotor rightClamp;
+    protected DcMotor leftClamp;
 
     // Servos
-    protected Servo servo0;
-    protected Servo servo1;
+//    protected Servo servo0; no need because of mechanum clamp
+//    protected Servo servo1;
     protected Servo servo2;
     protected Servo servo3;
-    protected Servo servo5;
+    protected Servo colorServo;
 
     // Color sensor
     protected LynxI2cColorRangeSensor color0;
@@ -36,12 +38,15 @@ public class MainTeleOp extends LinearOpMode {
         motor0.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         spoolMotor = hardwareMap.get(DcMotor.class, "spoolMotor");
+        rightClamp = hardwareMap.get(DcMotor.class, "rightClamp");
+        leftClamp = hardwareMap.get(DcMotor.class, "leftClamp");
+
         // Servos initialization
-        servo0 = hardwareMap.get(Servo.class, "servo0");
-        servo1 = hardwareMap.get(Servo.class, "servo1");
+//        servo0 = hardwareMap.get(Servo.class, "servo0"); no need because of mechanum clamp
+//        servo1 = hardwareMap.get(Servo.class, "servo1");
         servo2 = hardwareMap.get(Servo.class, "servo2");
         servo3 = hardwareMap.get(Servo.class, "servo3");
-        servo5 = hardwareMap.get(Servo.class, "colorServo");
+        colorServo = hardwareMap.get(Servo.class, "colorServo");
         // Sensors intialization
         color0 = hardwareMap.get(LynxI2cColorRangeSensor.class, "color0");
 
@@ -56,9 +61,9 @@ public class MainTeleOp extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            servo5.setPosition(1);
+            colorServo.setPosition(1);
             drive();
-            runToggleClamp();
+            runClamp();
             runSpool();
             relic();
         }
@@ -81,19 +86,37 @@ public class MainTeleOp extends LinearOpMode {
         }
     }
 
-    private void runToggleClamp() {
+    private void runClamp() {
+        // Mechanum Clamp
+
+        // Normal ejecting and pulling
+        rightClamp.setPower(gamepad2.right_trigger);
+        leftClamp.setPower(-gamepad2.right_trigger);
+        rightClamp.setPower(-gamepad2.left_trigger);
+        leftClamp.setPower(gamepad2.left_trigger);
+
+        // Glyph Turning
         if (gamepad2.left_bumper) {
-            servo0.setPosition(0);
-            servo1.setPosition(0.7);
+            rightClamp.setPower(1);
+            leftClamp.setPower(1);
+        } else if (gamepad2.right_bumper) {
+            rightClamp.setPower(-1);
+            leftClamp.setPower(-1);
         }
-        if (gamepad2.right_bumper) {
-            servo0.setPosition(1);
-            servo1.setPosition(-1.5);
-        }
-        if (gamepad2.a) {
-            servo0.setPosition(0.37);
-            servo1.setPosition(0.3);
-        }
+
+        // Old Clamp
+//        if (gamepad2.left_bumper) {
+//            servo0.setPosition(0);
+//            servo1.setPosition(0.7);
+//        }
+//        if (gamepad2.right_bumper) {
+//            servo0.setPosition(1);
+//            servo1.setPosition(-1.5);
+//        }
+//        if (gamepad2.a) {
+//            servo0.setPosition(0.37);
+//            servo1.setPosition(0.3);
+//        }
     }
 ;
     private void runSpool() {
