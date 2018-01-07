@@ -19,8 +19,8 @@ public class MechanumTeleOP extends LinearOpMode {
     protected DcMotor leftClamp;
 
     // Servos
-//    protected Servo servo0; no need because of mechanum clamp
-//    protected Servo servo1;
+    protected Servo servo0;
+    protected Servo servo1;
     protected Servo servo2;
     protected Servo servo3;
     protected Servo colorServo;
@@ -42,8 +42,8 @@ public class MechanumTeleOP extends LinearOpMode {
         leftClamp = hardwareMap.get(DcMotor.class, "leftClamp");
 
         // Servos initialization
-//        servo0 = hardwareMap.get(Servo.class, "servo0"); no need because of mechanum clamp
-//        servo1 = hardwareMap.get(Servo.class, "servo1");
+        servo0 = hardwareMap.get(Servo.class, "servo0");
+        servo1 = hardwareMap.get(Servo.class, "servo1");
         servo2 = hardwareMap.get(Servo.class, "servo2");
         servo3 = hardwareMap.get(Servo.class, "servo3");
         colorServo = hardwareMap.get(Servo.class, "colorServo");
