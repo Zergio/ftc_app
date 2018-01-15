@@ -36,7 +36,7 @@ public class BlueRight extends LinearOpMode {
 
         clamp(true);
         sleep(500);
-        // move a clamp up a little bit more than halfway
+        // move a pull up a little bit more than halfway
         lift(0.6);
         // set color servo down
         servo5.setPosition(0.5);
@@ -167,7 +167,7 @@ public class BlueRight extends LinearOpMode {
     }
 
     /**
-     * Lift the clamp
+     * Lift the pull
      */
     protected void lift(double height) {
         // variable height is the position of the slide from 0
@@ -180,16 +180,16 @@ public class BlueRight extends LinearOpMode {
     }
 
     /**
-     * Open or close the clamp
+     * Open or close the pull
      */
     protected void clamp(boolean doClose) {
-        if (doClose) {
-            servo0.setPosition(1);
-            servo1.setPosition(-1.5);
-        } else {
-            servo0.setPosition(0.25);
-            servo1.setPosition(0.5);
-        }
+//        if (doClose) {
+//            servo0.setPosition(1);
+//            servo1.setPosition(-1.5);
+//        } else {
+//            servo0.setPosition(0.25);
+//            servo1.setPosition(0.5);
+//        }
     }
 
     protected float getSaturation(int color) {

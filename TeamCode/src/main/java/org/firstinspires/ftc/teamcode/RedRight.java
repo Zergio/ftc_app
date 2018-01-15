@@ -34,9 +34,9 @@ public class RedRight extends LinearOpMode {
         lift(0.05);
         lift(0);
 
-        clamp(true);
+        pull(true);
         sleep(500);
-        // move a clamp up a little bit more than halfway
+        // move a pull up a little bit more than halfway
         lift(0.6);
         // set color servo down
         servo5.setPosition(0.5);
@@ -69,7 +69,7 @@ public class RedRight extends LinearOpMode {
         sleep(200);
         lift(0);
         sleep(200);
-        clamp(false);
+        pull(false);
         sleep(200);
         moveInch(8);
         moveInch(-3);
@@ -171,7 +171,7 @@ public class RedRight extends LinearOpMode {
     }
 
     /**
-     * Lift the clamp
+     * Lift the pull
      */
     protected void lift(double height) {
         // variable height is the position of the slide from 0
@@ -183,18 +183,6 @@ public class RedRight extends LinearOpMode {
         spoolMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    /**
-     * Open or close the clamp
-     */
-    protected void clamp(boolean doClose) {
-        if (doClose) {
-            servo0.setPosition(1);
-            servo1.setPosition(-1.5);
-        } else {
-            servo0.setPosition(0.25);
-            servo1.setPosition(0.5);
-        }
-    }
 
     protected float getSaturation(int color) {
         float[] array = new float[3];
@@ -233,6 +221,28 @@ public class RedRight extends LinearOpMode {
         motor0.setPower(0);
         motor1.setPower(0);
     }
+
+    /**
+     * Open or close the pull
+     */
+    protected void pull(boolean doPull) {
+        if (doPull) {
+            rightClamp.setPower(1);
+            leftClamp.setPower(-1);
+        } else {
+            rightClamp.setPower(-1);
+            leftClamp.setPower(1);
+        }
+
+//        if (doClose) {
+//            servo0.setPosition(1);
+//            servo1.setPosition(-1.5);
+//        } else {
+//            servo0.setPosition(0.25);
+//            servo1.setPosition(0.5);
+//        }
+    }
+
 
     protected void turn(double degrees) {
         motor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

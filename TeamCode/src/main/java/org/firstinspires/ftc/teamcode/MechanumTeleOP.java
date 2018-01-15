@@ -54,7 +54,7 @@ public class MechanumTeleOP extends LinearOpMode {
         spoolMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    int slow = 2;
+    double slow = 2;
 
     public void runOpMode() {
         initOpMode();
@@ -74,7 +74,7 @@ public class MechanumTeleOP extends LinearOpMode {
             slow = 1;
         }
         if (gamepad1.left_bumper) {
-            slow = 2;
+            slow = 1.66;
         }
 
         motor0.setPower(gamepad1.left_stick_y / slow);
@@ -87,7 +87,7 @@ public class MechanumTeleOP extends LinearOpMode {
     }
 
     private void runClamp() {
-        // Mechanum Clamp
+        // Mecanum Clamp
 
         // Normal ejecting and pulling
         rightClamp.setPower(gamepad2.right_trigger);
