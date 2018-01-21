@@ -61,7 +61,7 @@ public class MechanumTeleOP extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            colorServo.setPosition(1);
+            colorServo.setPosition(0);
             drive();
             runClamp();
             runSpool();

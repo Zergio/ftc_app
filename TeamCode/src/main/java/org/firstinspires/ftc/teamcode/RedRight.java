@@ -30,33 +30,28 @@ public class RedRight extends LinearOpMode {
 
         int column = getColumn();
 
-        // move lift up a bit to disengage stopper, and then lower back down
-        lift(0.05);
-        lift(0);
-
         pull(true);
         sleep(500);
-        // move a pull up a little bit more than halfway
-        lift(0.6);
+
         // set color servo down
-        servo5.setPosition(0.5);
-        servo5.setPosition(0.065);
+        colorServo.setPosition(0.5);
+        colorServo.setPosition(0.935);
         sleep(2000); // We sleep to make sure that the original command is executed.
         int currentColor = Color.rgb(color0.red(), color0.green(), color0.blue());
         // test for blue
         if (getSaturation(currentColor) >= 0.5
                 && getHue(currentColor) > 190 && getHue(currentColor) < 250) {
             //Pick up servo a bit and then move backwards to knock of jewel
-            servo5.setPosition(0.085);
+            colorServo.setPosition(0.835);
             moveInch(-1.8);
         } else {
-            servo5.setPosition(0.085);
-            moveInch(2);
-            servo5.setPosition(1);
-            moveInch(-2.2);
+            colorServo.setPosition(0.835);
+            moveInch(3);
+            colorServo.setPosition(1);
+            moveInch(-3);
         }
         //completely pick up servo
-        servo5.setPosition(1);
+        colorServo.setPosition(0);
         sleep(2000);
         // deposit glyph in safe zone
         moveInch(-21);
@@ -67,11 +62,11 @@ public class RedRight extends LinearOpMode {
         sleep(200);
         turn(90);
         sleep(200);
-        lift(0);
+        moveInch(9);
         sleep(200);
         pull(false);
-        sleep(200);
-        moveInch(8);
+        moveInch(-3);
+        moveInch(3);
         moveInch(-3);
     }
 
@@ -86,11 +81,7 @@ public class RedRight extends LinearOpMode {
     protected DcMotor leftClamp;
 
     // Servos
-    protected Servo servo0;
-    protected Servo servo1;
-    protected Servo servo2;
-    protected Servo servo3;
-    protected Servo servo5;
+    protected Servo colorServo;
 
     // Color sensor
     protected LynxI2cColorRangeSensor color0;
@@ -131,9 +122,9 @@ public class RedRight extends LinearOpMode {
         while (this.getRuntime() < 3.0 && opModeIsActive()) {
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark == RelicRecoveryVuMark.LEFT) {
-                outcome = 6;
+                outcome = 7;
             } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
-                outcome = -6;
+                outcome = -7;
             } else {
                 outcome = 0;
             };
@@ -157,11 +148,7 @@ public class RedRight extends LinearOpMode {
         leftClamp = hardwareMap.get(DcMotor.class, "leftClamp");
 
         // Servos initialization
-        servo0 = hardwareMap.get(Servo.class, "servo0");
-        servo1 = hardwareMap.get(Servo.class, "servo1");
-        servo2 = hardwareMap.get(Servo.class, "servo2");
-        servo3 = hardwareMap.get(Servo.class, "servo3");
-        servo5 = hardwareMap.get(Servo.class, "colorServo");
+        colorServo = hardwareMap.get(Servo.class, "colorServo");
         // Sensors intialization
         color0 = hardwareMap.get(LynxI2cColorRangeSensor.class, "color0");
 
@@ -210,12 +197,11 @@ public class RedRight extends LinearOpMode {
         // 1440 with
         //     AndyMark NeveRest 40: 1120
         //     REV Hex Motor: 2240
-        motor0.setTargetPosition((int) (inches * -57.75));
-        motor1.setTargetPosition((int) (inches * 57.75));
-        waitForStart(); // really ???
+        motor0.setTargetPosition((int)(inches * -88));
+        motor1.setTargetPosition((int) (inches * 88));
         // the maximum speed of the motors.
-        motor0.setPower(0.1);
-        motor1.setPower(0.1);
+        motor0.setPower(0.2);
+        motor1.setPower(0.2);
         // Loop until both motors are no longer busy.
         while (motor0.isBusy() || motor1.isBusy()) ;
         motor0.setPower(0);
@@ -223,10 +209,10 @@ public class RedRight extends LinearOpMode {
     }
 
     /**
-     * Open or close the pull
+     * Pull or push the glyph
      */
-    protected void pull(boolean doPull) {
-        if (doPull) {
+    protected void pull(boolean pull) {
+        if (pull) {
             rightClamp.setPower(1);
             leftClamp.setPower(-1);
         } else {
@@ -251,10 +237,10 @@ public class RedRight extends LinearOpMode {
         motor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         // Change 1440 appropriately if you are not using
         // Modern Robotics encoders
-        motor0.setTargetPosition((int) (degrees * 7.55));
-        motor1.setTargetPosition((int) (degrees * 7.55));
-        motor0.setPower(0.15);
-        motor1.setPower(0.15);
+        motor0.setTargetPosition((int) (degrees * 12.8));
+        motor1.setTargetPosition((int) (degrees * 12.8));
+        motor0.setPower(0.35);
+        motor1.setPower(0.35);
         while (motor0.isBusy() || motor1.isBusy()) ;
         motor0.setPower(0);
         motor1.setPower(0);
