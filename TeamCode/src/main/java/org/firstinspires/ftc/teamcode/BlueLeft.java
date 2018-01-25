@@ -36,7 +36,7 @@ public class BlueLeft extends LinearOpMode {
         // set color servo down
         colorServo.setPosition(0.5);
         colorServo.setPosition(0.935);
-        sleep(2000); // We sleep to make sure that the original command is executed.
+        sleep(1000); // We sleep to make sure that the original command is executed.
         int currentColor = Color.rgb(color0.red(), color0.green(), color0.blue());
         // test for blue
         if (getSaturation(currentColor) >= 0.5
@@ -54,7 +54,7 @@ public class BlueLeft extends LinearOpMode {
         colorServo.setPosition(0);
         sleep(2000);
         // deposit glyph in safe zone
-        moveInch(26);
+        moveInch(28);
         sleep(200);
         turn(90);
         sleep(200);
@@ -62,7 +62,7 @@ public class BlueLeft extends LinearOpMode {
         sleep(200);
         turn(-90);
         sleep(200);
-        moveInch(7);
+        moveInch(6);
         sleep(200);
         pull(false);
         moveInch(-3);

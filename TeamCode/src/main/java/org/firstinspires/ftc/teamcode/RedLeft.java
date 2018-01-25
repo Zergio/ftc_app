@@ -35,7 +35,7 @@ public class RedLeft extends LinearOpMode {
 
         // set color servo down
         colorServo.setPosition(0.935);
-        sleep(2000); // We sleep to make sure that the original command is executed.
+        sleep(1000); // We sleep to make sure that the original command is executed.
         int currentColor = Color.rgb(color0.red(), color0.green(), color0.blue());
         // test for blue
         if (getSaturation(currentColor) >= 0.5

@@ -47,7 +47,7 @@ public class MechanumTeleOP extends LinearOpMode {
         servo2 = hardwareMap.get(Servo.class, "servo2");
         servo3 = hardwareMap.get(Servo.class, "servo3");
         colorServo = hardwareMap.get(Servo.class, "colorServo");
-        // Sensors intialization
+        // Sensors initialization
         color0 = hardwareMap.get(LynxI2cColorRangeSensor.class, "color0");
 
         // initialize the spool encoder
