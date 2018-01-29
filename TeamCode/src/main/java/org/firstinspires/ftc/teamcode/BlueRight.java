@@ -23,15 +23,14 @@ public class BlueRight extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        double offset = 0;
+
         initOpMode();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
         int column = getColumn();
-
-        pull(true);
-        sleep(500);
 
         // set color servo down
         colorServo.setPosition(0.5);
@@ -45,24 +44,23 @@ public class BlueRight extends LinearOpMode {
             colorServo.setPosition(0.835);
             moveInch(3);
             colorServo.setPosition(1);
-            moveInch(-3);
+            moveInch(-3.1);
         } else {
             colorServo.setPosition(0.835);
-            moveInch(-1.8);
-            moveInch(1.8);
+            moveInch(-2.2);
+            offset = 2.7;
         }
         //completely pick up servo
         colorServo.setPosition(0);
         sleep(2000);
         // deposit glyph in safe zone
-        moveInch(36.5 + column);
+        moveInch(34 + column + offset);
         sleep(200);
         turn(-90);
         sleep(200);
-        moveInch(5);
+        moveInch(6);
         sleep(200);
         pull(false);
-        moveInch(-3);
         moveInch(3);
         moveInch(-3);
     }
@@ -126,6 +124,10 @@ public class BlueRight extends LinearOpMode {
             };
             telemetry.update();
         }
+
+        //For Debugging
+        telemetry.addData("column", String.valueOf(outcome));
+        telemetry.update();
 
         return outcome;
     };

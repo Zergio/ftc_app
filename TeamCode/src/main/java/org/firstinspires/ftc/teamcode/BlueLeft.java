@@ -23,15 +23,14 @@ public class BlueLeft extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        double offset = 0;
+
         initOpMode();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
         int column = getColumn();
-
-        pull(true);
-        sleep(500);
 
         // set color servo down
         colorServo.setPosition(0.5);
@@ -45,16 +44,17 @@ public class BlueLeft extends LinearOpMode {
             colorServo.setPosition(0.835);
             moveInch(3);
             colorServo.setPosition(1);
-            moveInch(-3.2);
+            moveInch(-3.1);
         } else {
             colorServo.setPosition(0.835);
-            moveInch(-1.8);
+            moveInch(-2.2);
+            offset = 3.2;
         }
         //completely pick up servo
         colorServo.setPosition(0);
         sleep(2000);
         // deposit glyph in safe zone
-        moveInch(28);
+        moveInch(28 + offset);
         sleep(200);
         turn(90);
         sleep(200);
@@ -62,7 +62,7 @@ public class BlueLeft extends LinearOpMode {
         sleep(200);
         turn(-90);
         sleep(200);
-        moveInch(6);
+        moveInch(4);
         sleep(200);
         pull(false);
         moveInch(-3);
@@ -120,7 +120,7 @@ public class BlueLeft extends LinearOpMode {
 
         this.resetStartTime();
 
-        while (this.getRuntime() < 3.0 && opModeIsActive()) {
+        while (this.getRuntime() < 4.0 && opModeIsActive()) {
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark == RelicRecoveryVuMark.LEFT) {
                 outcome = -7;

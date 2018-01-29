@@ -23,15 +23,14 @@ public class RedRight extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        double offset = 0;
+
         initOpMode();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
         int column = getColumn();
-
-        pull(true);
-        sleep(500);
 
         // set color servo down
         colorServo.setPosition(0.5);
@@ -44,6 +43,7 @@ public class RedRight extends LinearOpMode {
             //Pick up servo a bit and then move backwards to knock of jewel
             colorServo.setPosition(0.835);
             moveInch(-1.8);
+            offset = 1.8;
         } else {
             colorServo.setPosition(0.835);
             moveInch(3);
@@ -54,7 +54,7 @@ public class RedRight extends LinearOpMode {
         colorServo.setPosition(0);
         sleep(2000);
         // deposit glyph in safe zone
-        moveInch(-21);
+        moveInch(-22 + offset);
         sleep(200);
         turn(90);
         sleep(200);
@@ -62,10 +62,9 @@ public class RedRight extends LinearOpMode {
         sleep(200);
         turn(90);
         sleep(200);
-        moveInch(9);
+        moveInch(8);
         sleep(200);
         pull(false);
-        moveInch(-3);
         moveInch(3);
         moveInch(-3);
     }
@@ -119,7 +118,7 @@ public class RedRight extends LinearOpMode {
 
         this.resetStartTime();
 
-        while (this.getRuntime() < 3.0 && opModeIsActive()) {
+        while (this.getRuntime() < 4.0 && opModeIsActive()) {
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark == RelicRecoveryVuMark.LEFT) {
                 outcome = 7;

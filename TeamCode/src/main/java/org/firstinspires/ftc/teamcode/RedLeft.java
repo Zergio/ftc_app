@@ -23,15 +23,14 @@ public class RedLeft extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        double offset = 0;
+
         initOpMode();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
         int column = getColumn();
-
-        pull(true);
-        sleep(500);
 
         // set color servo down
         colorServo.setPosition(0.935);
@@ -43,22 +42,23 @@ public class RedLeft extends LinearOpMode {
             //Pick up servo a bit and then move backwards to knock of jewel
             colorServo.setPosition(0.835);
             moveInch(-1.8);
+            offset = 1.8;
         } else {
             colorServo.setPosition(0.835);
             moveInch(3);
             colorServo.setPosition(1);
-            moveInch(-3.15);
+            moveInch(-3.2);
         }
         //completely pick up servo
         colorServo.setPosition(0);
         sleep(2000);
         // deposit glyph in safe zone
         sleep(200);
-        moveInch(-33.3 + column);
+        moveInch(-33.3 + column + offset);
         sleep(200);
         turn(-90);
         sleep(100);
-        moveInch(6);
+        moveInch(7);
         sleep(200);
         pull(false);
         moveInch(3);
@@ -123,7 +123,7 @@ public class RedLeft extends LinearOpMode {
 
         this.resetStartTime();
 
-        while (this.getRuntime() < 3.0 && opModeIsActive()) {
+        while (this.getRuntime() < 4.0 && opModeIsActive()) {
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark == RelicRecoveryVuMark.LEFT) {
                 outcome = -7;
@@ -132,8 +132,11 @@ public class RedLeft extends LinearOpMode {
             } else {
                 outcome = 0;
             };
-            telemetry.update();
         }
+
+        //For Debugging
+        telemetry.addData("column", String.valueOf(outcome));
+        telemetry.update();
 
         return outcome;
     };
