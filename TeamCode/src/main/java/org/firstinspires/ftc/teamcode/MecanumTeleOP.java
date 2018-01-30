@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Created by ethan on 12/3/17.
  */
 @TeleOp
-public class MechanumTeleOP extends LinearOpMode {
+public class MecanumTeleOP extends LinearOpMode {
     // Motors
     protected DcMotor motor0;
     protected DcMotor motor1;
@@ -118,7 +118,7 @@ public class MechanumTeleOP extends LinearOpMode {
 //            servo1.setPosition(0.3);
 //        }
     }
-;
+    ;
     private void runSpool() {
         double spoolMotorPower = gamepad2.left_stick_y;
         spoolMotor.setPower(spoolMotorPower);
