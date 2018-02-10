@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.lynx.LynxI2cColorRangeSensor;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -11,19 +10,20 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Created by ethan on 12/3/17.
  */
 @TeleOp
-@Disabled
-public class MainTeleOp extends LinearOpMode {
+public class MecanumTeleOP extends LinearOpMode {
     // Motors
     protected DcMotor motor0;
     protected DcMotor motor1;
     protected DcMotor spoolMotor;
+    protected DcMotor rightClamp;
+    protected DcMotor leftClamp;
 
     // Servos
     protected Servo servo0;
     protected Servo servo1;
     protected Servo servo2;
     protected Servo servo3;
-    protected Servo servo5;
+    protected Servo colorServo;
 
     // Color sensor
     protected LynxI2cColorRangeSensor color0;
@@ -38,29 +38,32 @@ public class MainTeleOp extends LinearOpMode {
         motor0.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         spoolMotor = hardwareMap.get(DcMotor.class, "spoolMotor");
+        rightClamp = hardwareMap.get(DcMotor.class, "rightClamp");
+        leftClamp = hardwareMap.get(DcMotor.class, "leftClamp");
+
         // Servos initialization
         servo0 = hardwareMap.get(Servo.class, "servo0");
         servo1 = hardwareMap.get(Servo.class, "servo1");
         servo2 = hardwareMap.get(Servo.class, "servo2");
         servo3 = hardwareMap.get(Servo.class, "servo3");
-        servo5 = hardwareMap.get(Servo.class, "colorServo");
-        // Sensors intialization
+        colorServo = hardwareMap.get(Servo.class, "colorServo");
+        // Sensors initialization
         color0 = hardwareMap.get(LynxI2cColorRangeSensor.class, "color0");
 
         // initialize the spool encoder
         spoolMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    int slow = 2;
+    double slow = 2;
 
     public void runOpMode() {
         initOpMode();
         waitForStart();
 
         while (opModeIsActive()) {
-            servo5.setPosition(1);
+            colorServo.setPosition(0);
             drive();
-            runToggleClamp();
+            runClamp();
             runSpool();
             relic();
         }
@@ -71,7 +74,7 @@ public class MainTeleOp extends LinearOpMode {
             slow = 1;
         }
         if (gamepad1.left_bumper) {
-            slow = 2;
+            slow = 1.66;
         }
 
         motor0.setPower(gamepad1.left_stick_y / slow);
@@ -83,21 +86,39 @@ public class MainTeleOp extends LinearOpMode {
         }
     }
 
-    private void runToggleClamp() {
+    private void runClamp() {
+        // Mecanum Clamp
+
+        // Normal ejecting and pulling
+        rightClamp.setPower(gamepad2.right_trigger);
+        leftClamp.setPower(-gamepad2.right_trigger);
+        rightClamp.setPower(-gamepad2.left_trigger);
+        leftClamp.setPower(gamepad2.left_trigger);
+
+        // Glyph Turning
         if (gamepad2.left_bumper) {
-            servo0.setPosition(0);
-            servo1.setPosition(0.7);
+            rightClamp.setPower(1);
+            leftClamp.setPower(1);
+        } else if (gamepad2.right_bumper) {
+            rightClamp.setPower(-1);
+            leftClamp.setPower(-1);
         }
-        if (gamepad2.right_bumper) {
-            servo0.setPosition(1);
-            servo1.setPosition(-1.5);
-        }
-        if (gamepad2.a) {
-            servo0.setPosition(0.37);
-            servo1.setPosition(0.3);
-        }
+
+        // Old Clamp
+//        if (gamepad2.left_bumper) {
+//            servo0.setPosition(0);
+//            servo1.setPosition(0.7);
+//        }
+//        if (gamepad2.right_bumper) {
+//            servo0.setPosition(1);
+//            servo1.setPosition(-1.5);
+//        }
+//        if (gamepad2.a) {
+//            servo0.setPosition(0.37);
+//            servo1.setPosition(0.3);
+//        }
     }
-;
+    ;
     private void runSpool() {
         double spoolMotorPower = gamepad2.left_stick_y;
         spoolMotor.setPower(spoolMotorPower);

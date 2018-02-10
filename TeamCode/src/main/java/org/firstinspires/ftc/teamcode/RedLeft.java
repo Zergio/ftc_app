@@ -23,63 +23,69 @@ public class RedLeft extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        double offset = 0;
+
         initOpMode();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
-        clamp(true);
-        sleep(500);
-        // move a clamp up a little bit more than halfway
-        lift(0.6);
+        int column = getColumn();
+
         // set color servo down
-        servo5.setPosition(0.5);
-        servo5.setPosition(0.065);
-        sleep(2000); // We sleep to make sure that the original command is executed.
+        colorServo.setPosition(0.935);
+        sleep(1000); // We sleep to make sure that the original command is executed.
         int currentColor = Color.rgb(color0.red(), color0.green(), color0.blue());
         // test for blue
         if (getSaturation(currentColor) >= 0.5
                 && getHue(currentColor) > 190 && getHue(currentColor) < 250) {
             //Pick up servo a bit and then move backwards to knock of jewel
-            servo5.setPosition(0.085);
+            colorServo.setPosition(0.835);
             moveInch(-1.8);
+            offset = 1.8;
         } else {
-            servo5.setPosition(0.085);
-            moveInch(2);
-            servo5.setPosition(1);
-            moveInch(-2.15);
+            colorServo.setPosition(0.835);
+            moveInch(3);
+            colorServo.setPosition(1);
+            moveInch(-3.2);
         }
         //completely pick up servo
-        servo5.setPosition(1);
+        colorServo.setPosition(0);
         sleep(2000);
         // deposit glyph in safe zone
-        moveInch(-32.3);
+        sleep(200);
+        moveInch(-33.3 + column + offset);
         sleep(200);
         turn(-90);
-        sleep(200);
-        lift(0);
         sleep(100);
-        clamp(false);
+        moveInch(7);
         sleep(200);
-        moveInch(6);
+        pull(false);
+        moveInch(3);
         moveInch(-3);
+
+        // Test for getting more glyphs
+//        pull(true);
+//        turn(180);
+//        moveInch(45);
+//        moveInch(-10);
+//        turn(180);
+//        lift(.8);
+//        moveInch(38);
+//        pull(false);
+//        moveInch(3);
+//        moveInch(-3);
     }
-
-
-
-
 
     // Motors
     protected DcMotor motor0;
     protected DcMotor motor1;
     protected DcMotor spoolMotor;
+    protected DcMotor rightClamp;
+    protected DcMotor leftClamp;
 
     // Servos
-    protected Servo servo0;
-    protected Servo servo1;
-    protected Servo servo2;
-    protected Servo servo3;
-    protected Servo servo5;
+    protected Servo colorServo;
 
     // Color sensor
     protected LynxI2cColorRangeSensor color0;
@@ -95,11 +101,13 @@ public class RedLeft extends LinearOpMode {
 
     private VuforiaLocalizer vuforia;
 
-    public RelicRecoveryVuMark getColumn() {
+    public int getColumn() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources()
                 .getIdentifier("cameraMonitorViewId",
                         "id",
                         hardwareMap.appContext.getPackageName());
+
+        int outcome = 0;
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
         parameters.vuforiaLicenseKey = vuforiaLicense;
@@ -111,19 +119,27 @@ public class RedLeft extends LinearOpMode {
         relicTemplate.setName("relicVuMarkTemplate");
         relicTrackables.activate();
 
+
+
         this.resetStartTime();
 
-        while (this.getRuntime() < 3.0 && opModeIsActive()) {
+        while (this.getRuntime() < 4.0 && opModeIsActive()) {
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
-            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
-                return vuMark;
+            if (vuMark == RelicRecoveryVuMark.LEFT) {
+                outcome = -7;
+            } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
+                outcome = 7;
             } else {
-                telemetry.addData("VuMark", "not visible");
-            }
-            telemetry.update();
+                outcome = 0;
+            };
         }
-        return RelicRecoveryVuMark.UNKNOWN;
-    }
+
+        //For Debugging
+        telemetry.addData("column", String.valueOf(outcome));
+        telemetry.update();
+
+        return outcome;
+    };
 
     /*
      * Initialize the variables for the OpMode
@@ -134,13 +150,12 @@ public class RedLeft extends LinearOpMode {
         motor1 = hardwareMap.get(DcMotor.class, "motor1");
         motor0.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightClamp = hardwareMap.get(DcMotor.class, "rightClamp");
+        leftClamp = hardwareMap.get(DcMotor.class, "leftClamp");
+
         spoolMotor = hardwareMap.get(DcMotor.class, "spoolMotor");
         // Servos initialization
-        servo0 = hardwareMap.get(Servo.class, "servo0");
-        servo1 = hardwareMap.get(Servo.class, "servo1");
-        servo2 = hardwareMap.get(Servo.class, "servo2");
-        servo3 = hardwareMap.get(Servo.class, "servo3");
-        servo5 = hardwareMap.get(Servo.class, "servo5");
+        colorServo = hardwareMap.get(Servo.class, "colorServo");
         // Sensors intialization
         color0 = hardwareMap.get(LynxI2cColorRangeSensor.class, "color0");
 
@@ -150,7 +165,7 @@ public class RedLeft extends LinearOpMode {
     }
 
     /**
-     * Lift the clamp
+     * Lift the pull
      */
     protected void lift(double height) {
         // variable height is the position of the slide from 0
@@ -163,16 +178,24 @@ public class RedLeft extends LinearOpMode {
     }
 
     /**
-     * Open or close the clamp
+     * Pull or push the glyph
      */
-    protected void clamp(boolean doClose) {
-        if (doClose) {
-            servo0.setPosition(1);
-            servo1.setPosition(-1.5);
+    protected void pull(boolean pull) {
+        if (pull) {
+            rightClamp.setPower(1);
+            leftClamp.setPower(-1);
         } else {
-            servo0.setPosition(0.25);
-            servo1.setPosition(0.5);
+            rightClamp.setPower(-1);
+            leftClamp.setPower(1);
         }
+
+//        if (doClose) {
+//            servo0.setPosition(1);
+//            servo1.setPosition(-1.5);
+//        } else {
+//            servo0.setPosition(0.25);
+//            servo1.setPosition(0.5);
+//        }
     }
 
     protected float getSaturation(int color) {
@@ -201,12 +224,11 @@ public class RedLeft extends LinearOpMode {
         // 1440 with
         //     AndyMark NeveRest 40: 1120
         //     REV Hex Motor: 2240
-        motor0.setTargetPosition((int) (inches * -57.75));
-        motor1.setTargetPosition((int) (inches * 57.75));
-        waitForStart(); // really ???
+        motor0.setTargetPosition((int) (inches * -88));
+        motor1.setTargetPosition((int) (inches * 88));
         // the maximum speed of the motors.
-        motor0.setPower(0.1);
-        motor1.setPower(0.1);
+        motor0.setPower(0.3);
+        motor1.setPower(0.3);
         // Loop until both motors are no longer busy.
         while (motor0.isBusy() || motor1.isBusy()) ;
         motor0.setPower(0);
@@ -220,10 +242,10 @@ public class RedLeft extends LinearOpMode {
         motor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         // Change 1440 appropriately if you are not using
         // Modern Robotics encoders
-        motor0.setTargetPosition((int) (degrees * 7.55));
-        motor1.setTargetPosition((int) (degrees * 7.55));
-        motor0.setPower(0.15);
-        motor1.setPower(0.15);
+        motor0.setTargetPosition((int) (degrees * 12.8));
+        motor1.setTargetPosition((int) (degrees * 12.8));
+        motor0.setPower(0.35);
+        motor1.setPower(0.35);
         while (motor0.isBusy() || motor1.isBusy()) ;
         motor0.setPower(0);
         motor1.setPower(0);
