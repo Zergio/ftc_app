@@ -33,24 +33,21 @@ public class RedLeft extends LinearOpMode {
         int column = getColumn();
 
         // set color servo down
-        colorServo.setPosition(1);
+        raise(false);
         sleep(1000); // We sleep to make sure that the original command is executed.
         int currentColor = Color.rgb(color0.red(), color0.green(), color0.blue());
         // test for blue
         if (getSaturation(currentColor) >= 0.5
                 && getHue(currentColor) > 190 && getHue(currentColor) < 250) {
             //Pick up servo a bit and then move backwards to knock of jewel
-            colorServo.setPosition(1);
-            moveInch(-1.8);
-            offset = 1.8;
+            raise(false);
+            knock("back");
         } else {
-            colorServo.setPosition(1);
-            moveInch(3);
-            colorServo.setPosition(1);
-            moveInch(-3.2);
+            raise(false);
+            knock("forward");
         }
         //completely pick up servo
-        colorServo.setPosition(0);
+        raise(true);
         sleep(2000);
         // deposit glyph in safe zone
         sleep(200);
@@ -86,6 +83,8 @@ public class RedLeft extends LinearOpMode {
 
     // Servos
     protected Servo colorServo;
+    protected Servo colorServo2;
+    protected Servo knockServo;
 
     // Color sensor
     protected LynxI2cColorRangeSensor color0;
@@ -154,8 +153,12 @@ public class RedLeft extends LinearOpMode {
         leftClamp = hardwareMap.get(DcMotor.class, "leftClamp");
 
         spoolMotor = hardwareMap.get(DcMotor.class, "spoolMotor");
+
         // Servos initialization
         colorServo = hardwareMap.get(Servo.class, "colorServo");
+        colorServo2 = hardwareMap.get(Servo.class, "colorServo2");
+        knockServo = hardwareMap.get(Servo.class, "knockServo");
+
         // Sensors intialization
         color0 = hardwareMap.get(LynxI2cColorRangeSensor.class, "color0");
 
@@ -251,4 +254,25 @@ public class RedLeft extends LinearOpMode {
         motor1.setPower(0);
     }
 
+    protected void raise (boolean lift) {
+        if (lift) {
+            colorServo.setPosition(-1);
+            colorServo2.setPosition(1);
+        } else {
+            colorServo.setPosition(1);
+            colorServo.setPosition(-1);
+        }
+    }
+
+    protected void knock (String direction) {
+        if (direction == "forward") {
+            knockServo.setPosition(-1);
+            sleep(1000);
+            knockServo.setPosition(.5);
+        } else if (direction == "back") {
+            knockServo.setPosition(1);
+            sleep(1000);
+            knockServo.setPosition(.5);
+        }
+    }
 }

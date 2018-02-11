@@ -15,6 +15,7 @@ public class MecanumTeleOP extends LinearOpMode {
     protected DcMotor motor0;
     protected DcMotor motor1;
     protected DcMotor spoolMotor;
+    protected DcMotor spoolMotor2;
     protected DcMotor rightClamp;
     protected DcMotor leftClamp;
 
@@ -22,8 +23,8 @@ public class MecanumTeleOP extends LinearOpMode {
     protected Servo servo0;
     protected Servo servo1;
     protected Servo servo2;
-    protected Servo servo3;
     protected Servo colorServo;
+    protected Servo colorServo2;
 
     // Color sensor
     protected LynxI2cColorRangeSensor color0;
@@ -37,7 +38,12 @@ public class MecanumTeleOP extends LinearOpMode {
         motor1 = hardwareMap.get(DcMotor.class, "motor1");
         motor0.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         spoolMotor = hardwareMap.get(DcMotor.class, "spoolMotor");
+        spoolMotor2 = hardwareMap.get(DcMotor.class,"spoolMotor2");
+        spoolMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        spoolMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         rightClamp = hardwareMap.get(DcMotor.class, "rightClamp");
         leftClamp = hardwareMap.get(DcMotor.class, "leftClamp");
 
@@ -45,8 +51,9 @@ public class MecanumTeleOP extends LinearOpMode {
         servo0 = hardwareMap.get(Servo.class, "servo0");
         servo1 = hardwareMap.get(Servo.class, "servo1");
         servo2 = hardwareMap.get(Servo.class, "servo2");
-        servo3 = hardwareMap.get(Servo.class, "servo3");
         colorServo = hardwareMap.get(Servo.class, "colorServo");
+        colorServo2 = hardwareMap.get(Servo.class,"colorServo2");
+
         // Sensors initialization
         color0 = hardwareMap.get(LynxI2cColorRangeSensor.class, "color0");
 
@@ -61,11 +68,14 @@ public class MecanumTeleOP extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            colorServo.setPosition(0);
             drive();
             runClamp();
             runSpool();
-            relic();
+//            relic();
+            if (gamepad2.a) {
+                colorServo.setPosition(-1);
+                colorServo2.setPosition(1);
+            }
         }
     }
 
@@ -77,13 +87,8 @@ public class MecanumTeleOP extends LinearOpMode {
             slow = 1.66;
         }
 
-        motor0.setPower(gamepad1.left_stick_y / slow);
-        motor1.setPower(-1 * gamepad1.left_stick_y / slow);
-
-        if (gamepad1.right_stick_x != 0) {
-            motor0.setPower(gamepad1.right_stick_x / slow * 2);
-            motor1.setPower(gamepad1.right_stick_x / slow * 2);
-        }
+        motor0.setPower((gamepad1.left_stick_y / slow) + (gamepad1.right_stick_x / slow));
+        motor1.setPower((-1 * gamepad1.left_stick_y / slow) + (gamepad1.right_stick_x / slow));
     }
 
     private void runClamp() {
@@ -120,23 +125,22 @@ public class MecanumTeleOP extends LinearOpMode {
     }
     ;
     private void runSpool() {
-        double spoolMotorPower = gamepad2.left_stick_y;
-        spoolMotor.setPower(spoolMotorPower);
-        spoolMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        spoolMotor.setPower(-gamepad2.left_stick_y);
+        spoolMotor2.setPower(-gamepad2.left_stick_y);
     }
 
-    private void relic() {
-        if (gamepad2.dpad_up) {
-            servo3.setPosition(-1);
-        }
-        if (gamepad2.dpad_down) {
-            servo3.setPosition(1);
-        }
-        if (gamepad2.x) {
-            servo2.setPosition(-1);
-        }
-        if (gamepad2.b) {
-            servo2.setPosition(1);
-        }
-    }
+//    private void relic() {
+//        if (gamepad2.dpad_up) {
+//            servo3.setPosition(-1);
+//        }
+//        if (gamepad2.dpad_down) {
+//            servo3.setPosition(1);
+//        }
+//        if (gamepad2.x) {
+//            servo2.setPosition(-1);
+//        }
+//        if (gamepad2.b) {
+//            servo2.setPosition(1);
+//        }
+//    }
 }
