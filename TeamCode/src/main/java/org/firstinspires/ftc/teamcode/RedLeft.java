@@ -33,18 +33,18 @@ public class RedLeft extends LinearOpMode {
         int column = getColumn();
 
         // set color servo down
-        colorServo.setPosition(0.935);
+        colorServo.setPosition(1);
         sleep(1000); // We sleep to make sure that the original command is executed.
         int currentColor = Color.rgb(color0.red(), color0.green(), color0.blue());
         // test for blue
         if (getSaturation(currentColor) >= 0.5
                 && getHue(currentColor) > 190 && getHue(currentColor) < 250) {
             //Pick up servo a bit and then move backwards to knock of jewel
-            colorServo.setPosition(0.835);
+            colorServo.setPosition(1);
             moveInch(-1.8);
             offset = 1.8;
         } else {
-            colorServo.setPosition(0.835);
+            colorServo.setPosition(1);
             moveInch(3);
             colorServo.setPosition(1);
             moveInch(-3.2);
