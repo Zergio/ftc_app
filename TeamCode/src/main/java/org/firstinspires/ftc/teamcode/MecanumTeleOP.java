@@ -73,8 +73,8 @@ public class MecanumTeleOP extends LinearOpMode {
             runSpool();
 //            relic();
             if (gamepad2.a) {
-                colorServo.setPosition(-1);
-                colorServo2.setPosition(1);
+                colorServo.setPosition(-0.65);
+                colorServo2.setPosition(.65);
             }
         }
     }
