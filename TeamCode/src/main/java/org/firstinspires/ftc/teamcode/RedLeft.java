@@ -37,18 +37,18 @@ public class RedLeft extends LinearOpMode {
         sleep(1000); // We sleep to make sure that the original command is executed.
         int currentColor = Color.rgb(color0.red(), color0.green(), color0.blue());
         // test for blue
-        if (getSaturation(currentColor) >= 0.5
-                && getHue(currentColor) > 190 && getHue(currentColor) < 250) {
+        boolean isBlue = getSaturation(currentColor) >= 0.5 && getHue(currentColor) > 190 && getHue(currentColor) < 250;
+        if (isBlue) {
             //Pick up servo a bit and then move backwards to knock of jewel
             raise(false);
-            knock("back");
+            knock("sensor");
         } else {
             raise(false);
-            knock("forward");
+            knock("nonsensor");
         }
         //completely pick up servo
         raise(true);
-        sleep(2000);
+        sleep(1000);
         // deposit glyph in safe zone
         sleep(200);
         moveInch(-33.3 + column + offset);
@@ -260,19 +260,19 @@ public class RedLeft extends LinearOpMode {
             colorServo2.setPosition(1);
         } else {
             colorServo.setPosition(1);
-            colorServo.setPosition(-1);
+            colorServo2.setPosition(-1);
         }
     }
 
     protected void knock (String direction) {
-        if (direction == "forward") {
-            knockServo.setPosition(-1);
-            sleep(1000);
-            knockServo.setPosition(.5);
-        } else if (direction == "back") {
+        if (direction == "nonsensor") {
             knockServo.setPosition(1);
             sleep(1000);
-            knockServo.setPosition(.5);
+            knockServo.setPosition(.45);
+        } else if (direction == "sensor") {
+            knockServo.setPosition(-1);
+            sleep(1000);
+            knockServo.setPosition(.45);
         }
     }
 }

@@ -25,6 +25,7 @@ public class MecanumTeleOP extends LinearOpMode {
     protected Servo servo2;
     protected Servo colorServo;
     protected Servo colorServo2;
+    protected Servo knockServo;
 
     // Color sensor
     protected LynxI2cColorRangeSensor color0;
@@ -53,6 +54,7 @@ public class MecanumTeleOP extends LinearOpMode {
         servo2 = hardwareMap.get(Servo.class, "servo2");
         colorServo = hardwareMap.get(Servo.class, "colorServo");
         colorServo2 = hardwareMap.get(Servo.class,"colorServo2");
+        knockServo = hardwareMap.get(Servo.class,"knockServo");
 
         // Sensors initialization
         color0 = hardwareMap.get(LynxI2cColorRangeSensor.class, "color0");
@@ -73,6 +75,7 @@ public class MecanumTeleOP extends LinearOpMode {
             runSpool();
 //            relic();
             if (gamepad2.a) {
+                knockServo.setPosition(.45);
                 colorServo.setPosition(-0.65);
                 colorServo2.setPosition(.65);
             }
