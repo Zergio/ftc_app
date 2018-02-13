@@ -23,21 +23,20 @@ public class RedLeft extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        double offset = 0;
 
         initOpMode();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
-        int column = getColumn();
+        double column = getColumn();
 
         // set color servo down
         raise(false);
         sleep(1000); // We sleep to make sure that the original command is executed.
         int currentColor = Color.rgb(color0.red(), color0.green(), color0.blue());
         // test for blue
-        boolean isBlue = getSaturation(currentColor) >= 0.5 && getHue(currentColor) > 190 && getHue(currentColor) < 250;
+        boolean isBlue = color0.blue() > color0.red(); /*getSaturation(currentColor) >= 0.5 && getHue(currentColor) > 190 && getHue(currentColor) < 250*/
         if (isBlue) {
             //Pick up servo a bit and then move backwards to knock of jewel
             raise(false);
@@ -51,15 +50,15 @@ public class RedLeft extends LinearOpMode {
         sleep(1000);
         // deposit glyph in safe zone
         sleep(200);
-        moveInch(-33.3 + column + offset);
+        moveInch(-34.8 + column);
         sleep(200);
         turn(-90);
         sleep(100);
-        moveInch(7);
+        moveInch(8);
         sleep(200);
         pull(false);
-        moveInch(3);
-        moveInch(-3);
+        moveInch(1);
+        moveInch(-2);
 
         // Test for getting more glyphs
 //        pull(true);
@@ -100,13 +99,13 @@ public class RedLeft extends LinearOpMode {
 
     private VuforiaLocalizer vuforia;
 
-    public int getColumn() {
+    public double getColumn() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources()
                 .getIdentifier("cameraMonitorViewId",
                         "id",
                         hardwareMap.appContext.getPackageName());
 
-        int outcome = 0;
+        double outcome = 0;
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
         parameters.vuforiaLicenseKey = vuforiaLicense;
@@ -125,9 +124,9 @@ public class RedLeft extends LinearOpMode {
         while (this.getRuntime() < 4.0 && opModeIsActive()) {
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark == RelicRecoveryVuMark.LEFT) {
-                outcome = -7;
+                outcome = -7.5;
             } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
-                outcome = 7;
+                outcome = 7.5;
             } else {
                 outcome = 0;
             };

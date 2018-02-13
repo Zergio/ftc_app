@@ -23,38 +23,33 @@ public class BlueRight extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        double offset = 0;
 
         initOpMode();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
-        int column = getColumn();
+        double column = getColumn();
 
         // set color servo down
-        colorServo.setPosition(0.5);
-        colorServo.setPosition(1);
+        raise(false);
         sleep(1000); // We sleep to make sure that the original command is executed.
         int currentColor = Color.rgb(color0.red(), color0.green(), color0.blue());
         // test for blue
-        if (getSaturation(currentColor) >= 0.5
-                && getHue(currentColor) > 190 && getHue(currentColor) < 250) {
+        boolean isBlue = color0.blue() > color0.red();
+        if (isBlue) {
             //Pick up servo a bit and then move backwards to knock of jewel
-            colorServo.setPosition(1);
-            moveInch(3);
-            colorServo.setPosition(1);
-            moveInch(-3.1);
+            raise(false);
+            knock("nonsensor");
         } else {
-            colorServo.setPosition(1);
-            moveInch(-2.2);
-            offset = 2.7;
+            raise(false);
+            knock("sensor");
         }
         //completely pick up servo
-        colorServo.setPosition(0);
+        raise(true);
         sleep(2000);
         // deposit glyph in safe zone
-        moveInch(34 + column + offset);
+        moveInch(34 + column);
         sleep(200);
         turn(-90);
         sleep(200);
@@ -78,6 +73,8 @@ public class BlueRight extends LinearOpMode {
 
     // Servos
     protected Servo colorServo;
+    protected Servo colorServo2;
+    protected Servo knockServo;
 
     // Color sensor
     protected LynxI2cColorRangeSensor color0;
@@ -93,13 +90,13 @@ public class BlueRight extends LinearOpMode {
 
     private VuforiaLocalizer vuforia;
 
-    public int getColumn() {
+    public double getColumn() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources()
                 .getIdentifier("cameraMonitorViewId",
                         "id",
                         hardwareMap.appContext.getPackageName());
 
-        int outcome = 0;
+        double outcome = 0;
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
         parameters.vuforiaLicenseKey = vuforiaLicense;
@@ -116,9 +113,9 @@ public class BlueRight extends LinearOpMode {
         while (this.getRuntime() < 3.0 && opModeIsActive()) {
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark == RelicRecoveryVuMark.LEFT) {
-                outcome = -7;
+                outcome = -7.5;
             } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
-                outcome = 7;
+                outcome = 7.5;
             } else {
                 outcome = 0;
             };
@@ -147,6 +144,9 @@ public class BlueRight extends LinearOpMode {
 
         // Servos initialization
         colorServo = hardwareMap.get(Servo.class, "colorServo");
+        colorServo2 = hardwareMap.get(Servo.class,"colorServo2");
+        knockServo = hardwareMap.get(Servo.class,"knockServo");
+
         // Sensors intialization
         color0 = hardwareMap.get(LynxI2cColorRangeSensor.class, "color0");
 
@@ -242,4 +242,25 @@ public class BlueRight extends LinearOpMode {
         motor1.setPower(0);
     }
 
+    protected void raise (boolean lift) {
+        if (lift) {
+            colorServo.setPosition(-1);
+            colorServo2.setPosition(1);
+        } else {
+            colorServo.setPosition(1);
+            colorServo2.setPosition(-1);
+        }
+    }
+
+    protected void knock (String direction) {
+        if (direction == "nonsensor") {
+            knockServo.setPosition(1);
+            sleep(1000);
+            knockServo.setPosition(.45);
+        } else if (direction == "sensor") {
+            knockServo.setPosition(-1);
+            sleep(1000);
+            knockServo.setPosition(.45);
+        }
+    }
 }
