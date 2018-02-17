@@ -31,7 +31,7 @@ public class RedRight extends LinearOpMode {
 
         double column = getColumn();
 
-        // set color servo down
+        // position color servo down
         raise(false);
         sleep(1000); // We sleep to make sure that the original command is executed.
         int currentColor = Color.rgb(color0.red(), color0.green(), color0.blue());
@@ -50,19 +50,21 @@ public class RedRight extends LinearOpMode {
         raise(true);
         sleep(2000);
         // deposit glyph in safe zone
-        moveInch(-24);
+        moveInch(-4,true);
+        sleep(100);
+        moveInch(-20,false);
         sleep(200);
         turn(90);
         sleep(200);
-        moveInch(11 + column);
+        moveInch(11 + column,false);
         sleep(200);
         turn(90);
         sleep(200);
-        moveInch(8);
+        moveInch(8,false);
         sleep(200);
         pull(false);
-        moveInch(3);
-        moveInch(-3);
+        moveInch(3,false);
+        moveInch(-3,false);
     }
 
 
@@ -186,7 +188,9 @@ public class RedRight extends LinearOpMode {
     /**
      * Move the robot forward
      */
-    protected void moveInch(double inches) {
+    protected void moveInch(double inches, boolean slow) {
+        double power;
+
         motor0.setDirection(DcMotor.Direction.FORWARD);
         motor1.setDirection(DcMotor.Direction.FORWARD);
         motor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -199,9 +203,15 @@ public class RedRight extends LinearOpMode {
         //     REV Hex Motor: 2240
         motor0.setTargetPosition((int)(inches * -88));
         motor1.setTargetPosition((int) (inches * 88));
+
         // the maximum speed of the motors.
-        motor0.setPower(0.2);
-        motor1.setPower(0.2);
+        if (slow) {
+            power = .1;
+        } else {
+            power = .2;
+        }
+        motor0.setPower(power);
+        motor1.setPower(power);
         // Loop until both motors are no longer busy.
         while (motor0.isBusy() || motor1.isBusy()) ;
         motor0.setPower(0);

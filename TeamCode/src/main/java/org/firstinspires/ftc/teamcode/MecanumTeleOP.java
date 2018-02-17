@@ -18,6 +18,7 @@ public class MecanumTeleOP extends LinearOpMode {
     protected DcMotor spoolMotor2;
     protected DcMotor rightClamp;
     protected DcMotor leftClamp;
+    protected DcMotor relicRaise;
 
     // Servos
     protected Servo servo0;
@@ -26,6 +27,7 @@ public class MecanumTeleOP extends LinearOpMode {
     protected Servo colorServo;
     protected Servo colorServo2;
     protected Servo knockServo;
+    protected Servo relicClamp;
 
     // Color sensor
     protected LynxI2cColorRangeSensor color0;
@@ -45,6 +47,9 @@ public class MecanumTeleOP extends LinearOpMode {
         spoolMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         spoolMotor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        relicRaise = hardwareMap.get(DcMotor.class, "relicRaise");
+        relicRaise.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         rightClamp = hardwareMap.get(DcMotor.class, "rightClamp");
         leftClamp = hardwareMap.get(DcMotor.class, "leftClamp");
 
@@ -55,6 +60,7 @@ public class MecanumTeleOP extends LinearOpMode {
         colorServo = hardwareMap.get(Servo.class, "colorServo");
         colorServo2 = hardwareMap.get(Servo.class,"colorServo2");
         knockServo = hardwareMap.get(Servo.class,"knockServo");
+        relicClamp = hardwareMap.get(Servo.class,"relicClamp");
 
         // Sensors initialization
         color0 = hardwareMap.get(LynxI2cColorRangeSensor.class, "color0");
@@ -64,6 +70,7 @@ public class MecanumTeleOP extends LinearOpMode {
     }
 
     double slow = 2;
+    double position = 1;
 
     public void runOpMode() {
         initOpMode();
@@ -73,7 +80,7 @@ public class MecanumTeleOP extends LinearOpMode {
             drive();
             runClamp();
             runSpool();
-//            relic();
+            relic();
             if (gamepad2.a) {
                 knockServo.setPosition(.45);
                 colorServo.setPosition(-0.65);
@@ -103,14 +110,14 @@ public class MecanumTeleOP extends LinearOpMode {
         rightClamp.setPower(-gamepad2.left_trigger);
         leftClamp.setPower(gamepad2.left_trigger);
 
-        // Glyph Turning
-        if (gamepad2.left_bumper) {
-            rightClamp.setPower(1);
-            leftClamp.setPower(1);
-        } else if (gamepad2.right_bumper) {
-            rightClamp.setPower(-1);
-            leftClamp.setPower(-1);
-        }
+//        // Glyph Turning
+//        if (gamepad2.left_bumper) {
+//            rightClamp.setPower(1);
+//            leftClamp.setPower(1);
+//        } else if (gamepad2.right_bumper) {
+//            rightClamp.setPower(-1);
+//            leftClamp.setPower(-1);
+//        }
 
         // Old Clamp
 //        if (gamepad2.left_bumper) {
@@ -132,18 +139,14 @@ public class MecanumTeleOP extends LinearOpMode {
         spoolMotor2.setPower(-gamepad2.left_stick_y);
     }
 
-//    private void relic() {
-//        if (gamepad2.dpad_up) {
-//            servo3.setPosition(-1);
-//        }
-//        if (gamepad2.dpad_down) {
-//            servo3.setPosition(1);
-//        }
-//        if (gamepad2.x) {
-//            servo2.setPosition(-1);
-//        }
-//        if (gamepad2.b) {
-//            servo2.setPosition(1);
-//        }
-//    }
+    private void relic() {
+        relicRaise.setPower(gamepad2.right_stick_y / 4);
+
+        if (gamepad2.right_bumper) {
+            relicClamp.setPosition(0);
+        }
+        if (gamepad2.left_bumper) {
+            relicClamp.setPosition(.8);
+        }
+    }
 }
