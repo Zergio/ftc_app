@@ -146,7 +146,7 @@ public class MecanumTeleOP extends LinearOpMode {
             relicClamp.setPosition(0);
         }
         if (gamepad2.left_bumper) {
-            relicClamp.setPosition(.8);
+            relicClamp.setPosition(.7);
         }
     }
 }
