@@ -23,50 +23,48 @@ public class RedRight extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        double offset = 0;
 
         initOpMode();
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
-        int column = getColumn();
+        double column = getColumn();
 
-        // set color servo down
-        colorServo.setPosition(0.5);
-        colorServo.setPosition(1);
+        // position color servo down
+        raise(false);
         sleep(1000); // We sleep to make sure that the original command is executed.
         int currentColor = Color.rgb(color0.red(), color0.green(), color0.blue());
         // test for blue
-        if (getSaturation(currentColor) >= 0.5
-                && getHue(currentColor) > 190 && getHue(currentColor) < 250) {
+        boolean isBlue = color0.blue() > color0.red();
+        if (isBlue) {
             //Pick up servo a bit and then move backwards to knock of jewel
-            colorServo.setPosition(1);
-            moveInch(-1.8);
-            offset = 1.8;
+            raise(false);
+            knock("sensor");
         } else {
-            colorServo.setPosition(1);
-            moveInch(3);
-            colorServo.setPosition(1);
-            moveInch(-3);
+            raise(false);
+            knock("nonsensor");
+
         }
         //completely pick up servo
-        colorServo.setPosition(0);
+        raise(true);
         sleep(2000);
         // deposit glyph in safe zone
-        moveInch(-22 + offset);
+        moveInch(-4,true);
+        sleep(100);
+        moveInch(-20,false);
         sleep(200);
         turn(90);
         sleep(200);
-        moveInch(11 + column);
+        moveInch(11 + column,false);
         sleep(200);
         turn(90);
         sleep(200);
-        moveInch(8);
+        moveInch(8,false);
         sleep(200);
         pull(false);
-        moveInch(3);
-        moveInch(-3);
+        moveInch(3,false);
+        moveInch(-3,false);
     }
 
 
@@ -81,6 +79,8 @@ public class RedRight extends LinearOpMode {
 
     // Servos
     protected Servo colorServo;
+    protected Servo colorServo2;
+    protected Servo knockServo;
 
     // Color sensor
     protected LynxI2cColorRangeSensor color0;
@@ -96,13 +96,13 @@ public class RedRight extends LinearOpMode {
 
     private VuforiaLocalizer vuforia;
 
-    public int getColumn() {
+    public double getColumn() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources()
                 .getIdentifier("cameraMonitorViewId",
                         "id",
                         hardwareMap.appContext.getPackageName());
 
-        int outcome = 0;
+        double outcome = 0;
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
         parameters.vuforiaLicenseKey = vuforiaLicense;
@@ -121,9 +121,9 @@ public class RedRight extends LinearOpMode {
         while (this.getRuntime() < 4.0 && opModeIsActive()) {
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark == RelicRecoveryVuMark.LEFT) {
-                outcome = 7;
+                outcome = 7.5;
             } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
-                outcome = -7;
+                outcome = -7.5;
             } else {
                 outcome = 0;
             };
@@ -148,6 +148,9 @@ public class RedRight extends LinearOpMode {
 
         // Servos initialization
         colorServo = hardwareMap.get(Servo.class, "colorServo");
+        colorServo2 = hardwareMap.get(Servo.class,"colorServo2");
+        knockServo = hardwareMap.get(Servo.class,"knockServo");
+
         // Sensors intialization
         color0 = hardwareMap.get(LynxI2cColorRangeSensor.class, "color0");
 
@@ -185,7 +188,9 @@ public class RedRight extends LinearOpMode {
     /**
      * Move the robot forward
      */
-    protected void moveInch(double inches) {
+    protected void moveInch(double inches, boolean slow) {
+        double power;
+
         motor0.setDirection(DcMotor.Direction.FORWARD);
         motor1.setDirection(DcMotor.Direction.FORWARD);
         motor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -198,9 +203,15 @@ public class RedRight extends LinearOpMode {
         //     REV Hex Motor: 2240
         motor0.setTargetPosition((int)(inches * -88));
         motor1.setTargetPosition((int) (inches * 88));
+
         // the maximum speed of the motors.
-        motor0.setPower(0.2);
-        motor1.setPower(0.2);
+        if (slow) {
+            power = .1;
+        } else {
+            power = .2;
+        }
+        motor0.setPower(power);
+        motor1.setPower(power);
         // Loop until both motors are no longer busy.
         while (motor0.isBusy() || motor1.isBusy()) ;
         motor0.setPower(0);
@@ -245,4 +256,25 @@ public class RedRight extends LinearOpMode {
         motor1.setPower(0);
     }
 
+    protected void raise (boolean lift) {
+        if (lift) {
+            colorServo.setPosition(-1);
+            colorServo2.setPosition(1);
+        } else {
+            colorServo.setPosition(1);
+            colorServo2.setPosition(-1);
+        }
+    }
+
+    protected void knock (String direction) {
+        if (direction == "nonsensor") {
+            knockServo.setPosition(1);
+            sleep(1000);
+            knockServo.setPosition(.45);
+        } else if (direction == "sensor") {
+            knockServo.setPosition(-1);
+            sleep(1000);
+            knockServo.setPosition(.45);
+        }
+    }
 }
