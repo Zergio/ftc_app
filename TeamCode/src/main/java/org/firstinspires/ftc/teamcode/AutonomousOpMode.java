@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import android.graphics.Color;
 
 import com.qualcomm.hardware.lynx.LynxI2cColorRangeSensor;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -25,78 +24,36 @@ public abstract class AutonomousOpMode extends LinearOpMode {
             "Z4GwJEE65mmAwo6tfS54FIpfVq7qLKF3rByohYrwwKZ1mQM6STF1t8IsbeXrBEtfCQN5fSX2wLMPSJE34Iz0Ig" +
             "VlSAVbJfdxKkX8JONhqeAOWseLUkG+fI+Da71V4eMzfHarfuN7Nltbd+3zNE7DIwFQs5/PDIotbVVpYrpS4wiH" +
             "1lNPNxWLSyv/ArSyCyNi9Ygi5W/UqIlQ+7Mweg6f16d6nZpMN1Ejv1o0s7L4L0aXny";
+
     // Motors
     protected DcMotor motor0;
     protected DcMotor motor1;
     protected DcMotor spoolMotor;
     protected DcMotor rightClamp;
     protected DcMotor leftClamp;
-
     // Servos
     protected Servo colorServo;
-
+    protected Servo colorServo2;
+    protected Servo knockServo;
     // Color sensor
     protected LynxI2cColorRangeSensor color0;
     // Declare OpMode members.
     protected ElapsedTime runtime = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+
     private VuforiaLocalizer vuforia;
 
-    @Override
-    public void runOpMode() {
-        double offset = 0;
-
-        initOpMode();
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
-        runtime.reset();
-
-        int column = getColumn();
-
-        // set color servo down
-        colorServo.setPosition(0.5);
-        colorServo.setPosition(1);
-        sleep(1000); // We sleep to make sure that the original command is executed.
-        int currentColor = Color.rgb(color0.red(), color0.green(), color0.blue());
-        // test for blue
-        if (getSaturation(currentColor) >= 0.5
-                && getHue(currentColor) > 190 && getHue(currentColor) < 250) {
-            //Pick up servo a bit and then move backwards to knock of jewel
-            colorServo.setPosition(1);
-            moveInch(3);
-            colorServo.setPosition(1);
-            moveInch(-3.1);
-        } else {
-            colorServo.setPosition(1);
-            moveInch(-2.2);
-            offset = 3.2;
-        }
-        //completely pick up servo
-        colorServo.setPosition(0);
-        sleep(2000);
-        // deposit glyph in safe zone
-        moveInch(28 + offset);
-        sleep(200);
-        turn(90);
-        sleep(200);
-        moveInch(13 + column);
-        sleep(200);
-        turn(-90);
-        sleep(200);
-        moveInch(4);
-        sleep(200);
-        pull(false);
-        moveInch(-3);
-        moveInch(3);
-        moveInch(-3);
-    }
-
-    protected int getColumn() {
+    /**
+     * Get the column number as indicated on the cypher image.
+     *
+     * @return the column as double
+     */
+    protected double getColumn() {
         int cameraMonitorViewId = hardwareMap.appContext.getResources()
                 .getIdentifier("cameraMonitorViewId",
                         "id",
                         hardwareMap.appContext.getPackageName());
 
-        int outcome = 0;
+        double outcome = 0;
 
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
         parameters.vuforiaLicenseKey = vuforiaLicense;
@@ -114,9 +71,9 @@ public abstract class AutonomousOpMode extends LinearOpMode {
         while (this.getRuntime() < 4.0 && opModeIsActive()) {
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark == RelicRecoveryVuMark.LEFT) {
-                outcome = -7;
+                outcome = -7.5;
             } else if (vuMark == RelicRecoveryVuMark.RIGHT) {
-                outcome = 7;
+                outcome = 7.5;
             } else {
                 outcome = 0;
             }
@@ -127,9 +84,7 @@ public abstract class AutonomousOpMode extends LinearOpMode {
         return outcome;
     }
 
-    ;
-
-    /*
+    /**
      * Initialize the variables for the OpMode
      */
     protected void initOpMode() {
@@ -144,6 +99,9 @@ public abstract class AutonomousOpMode extends LinearOpMode {
 
         // Servos initialization
         colorServo = hardwareMap.get(Servo.class, "colorServo");
+        colorServo2 = hardwareMap.get(Servo.class, "colorServo2");
+        knockServo = hardwareMap.get(Servo.class, "knockServo");
+
         // Sensors intialization
         color0 = hardwareMap.get(LynxI2cColorRangeSensor.class, "color0");
 
@@ -193,7 +151,9 @@ public abstract class AutonomousOpMode extends LinearOpMode {
     /**
      * Move the robot forward
      */
-    protected void moveInch(double inches) {
+    protected void moveInch(double inches, boolean slow) {
+        double power;
+
         motor0.setDirection(DcMotor.Direction.FORWARD);
         motor1.setDirection(DcMotor.Direction.FORWARD);
         motor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -206,9 +166,15 @@ public abstract class AutonomousOpMode extends LinearOpMode {
         //     REV Hex Motor: 2240
         motor0.setTargetPosition((int) (inches * -88));
         motor1.setTargetPosition((int) (inches * 88));
+
         // the maximum speed of the motors.
-        motor0.setPower(0.2);
-        motor1.setPower(0.2);
+        if (slow) {
+            power = .1;
+        } else {
+            power = .2;
+        }
+        motor0.setPower(power);
+        motor1.setPower(power);
         // Loop until both motors are no longer busy.
         while (motor0.isBusy() || motor1.isBusy()) ;
         motor0.setPower(0);
@@ -229,5 +195,31 @@ public abstract class AutonomousOpMode extends LinearOpMode {
         while (motor0.isBusy() || motor1.isBusy()) ;
         motor0.setPower(0);
         motor1.setPower(0);
+    }
+
+    protected void raise(boolean lift) {
+        if (lift) {
+            colorServo.setPosition(-1);
+            colorServo2.setPosition(1);
+        } else {
+            colorServo.setPosition(1);
+            colorServo2.setPosition(-1);
+        }
+    }
+
+    protected void knock(String direction) {
+        if (direction == "nonsensor") {
+            knockServo.setPosition(1);
+            sleep(1000);
+            knockServo.setPosition(.45);
+        } else if (direction == "sensor") {
+            knockServo.setPosition(-1);
+            sleep(1000);
+            knockServo.setPosition(.45);
+        }
+    }
+
+    protected boolean isBlue() {
+        return color0.blue() > color0.red();
     }
 }
